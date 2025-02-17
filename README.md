@@ -31,3 +31,8 @@ TAVILY_API_KEY="..." \
 uv run python main.py
 ```
 Keep in mind you really only need one LLM API key.
+
+## Obtaining API keys
+- OpenAI: https://platform.openai.com/api-keys
+- Anthropic: https://console.anthropic.com/settings/keys
+- Tavily: https://app.tavily.com/home
