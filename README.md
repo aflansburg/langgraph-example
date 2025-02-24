@@ -52,7 +52,7 @@ Use the `--incremental-state` flag
 uv run main.py --incremental-state
 ```
 
-## Example Image
+## Example Session w/ memory checkpoint and state storage
 
 <img src="assets/example.png" alt="Example Image" style="width:75%;">
 
