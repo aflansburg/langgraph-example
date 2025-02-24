@@ -7,6 +7,9 @@ from src.state import State
 from src.util import set_sensitive_env
 from src.tools import get_tools
 
+# this is a static config for LLMs
+# we can add an env var for the exact model vs
+# the vendor
 LLMS = {
     "anthropic": "claude-3-5-sonnet-20240620",
     "openai": "gpt-4o",

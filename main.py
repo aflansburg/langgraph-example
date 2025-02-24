@@ -10,6 +10,8 @@ def main():
     # to implement them in src.tools.get_tools currently
     requested_tools = ["search"]
 
+    init_config = {"configurable": {"thread_id": "1"}}
+
     graph = get_graph(requested_tools)
 
     while True:
@@ -21,7 +23,9 @@ def main():
 
                 break
 
-            stream_graph_updates(graph=graph, user_input=user_input)
+            stream_graph_updates(
+                graph=graph, user_input=user_input, init_config=init_config
+            )
         except Exception as e:
             print(f"Error: {e}")
             break

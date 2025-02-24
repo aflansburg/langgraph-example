@@ -20,13 +20,13 @@ It might be easier to set the environment variables up front, otherwise you'll b
 ```bash
 export OPENAI_API_KEY="..."
 export ANTHROPIC_API_KEY="..."
-export MODEL_NAME="gpt-4o"
+export CHAT_MODEL="openai" # this will default to gpt-4o for now
 export TAVILY_API_KEY="..."
 
 # or
 OPENAI_API_KEY="..." \
 ANTHROPIC_API_KEY="..." \
-MODEL_NAME="gpt-4o" \
+CHAT_MODEL="openai" \
 TAVILY_API_KEY="..." \
 uv run python main.py
 ```
