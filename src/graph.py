@@ -54,3 +54,11 @@ def stream_graph_updates(
             event["messages"][-1].pretty_print()
     except Exception as e:
         print(f"Error in stream_graph_updates: {e}")
+
+
+def write_graph_png(graph: StateGraph):
+    try:
+        with open("graph_img/graph.png", "wb") as f:
+            f.write(graph.get_graph().draw_mermaid_png())
+    except Exception as e:
+        print(f"Error in when attempting to write graph png: {e}")

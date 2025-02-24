@@ -487,6 +487,9 @@ requires-dist = [
     { name = "tavily-python", specifier = ">=0.5.1" },
 ]
 
+[package.metadata.requires-dev]
+dev = []
+
 [[package]]
 name = "langgraph-sdk"
 version = "0.1.51"

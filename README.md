@@ -36,3 +36,11 @@ Keep in mind you really only need one LLM API key.
 - OpenAI: https://platform.openai.com/api-keys
 - Anthropic: https://console.anthropic.com/settings/keys
 - Tavily: https://app.tavily.com/home
+
+
+## Writing Graph mermaid to png
+Use the `--graph-image` flag
+
+```python
+uv run main.py --graph-image
+```

@@ -1,8 +1,10 @@
+import sys
+
 from src.util import set_env
-from src.graph import get_graph, stream_graph_updates
+from src.graph import get_graph, stream_graph_updates, write_graph_png
 
 
-def main():
+def main(write_graph_img: bool = False):
     set_env("CHAT_MODEL")
 
     # allows us to search the web
@@ -13,6 +15,9 @@ def main():
     init_config = {"configurable": {"thread_id": "1"}}
 
     graph = get_graph(requested_tools)
+
+    if write_graph_img:
+        write_graph_png(graph)
 
     while True:
         try:
@@ -32,4 +37,7 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    should_write_graph_img = False
+    if len(sys.argv) > 1 and sys.argv[1] == "--graph-image":
+        should_write_graph_img = True
+    main(write_graph_img=should_write_graph_img)
