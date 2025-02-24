@@ -44,3 +44,15 @@ Use the `--graph-image` flag
 ```python
 uv run main.py --graph-image
 ```
+
+## Storing the multi-turn state using StateSnapshot
+Use the `--incremental-state` flag
+
+```python
+uv run main.py --incremental-state
+```
+
+## Example Image
+
+<img src="assets/example.png" alt="Example Image" style="width:75%;">
+

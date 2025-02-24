@@ -1,3 +1,7 @@
+import json
+from datetime import datetime
+from typing import Any, Union
+
 from langgraph.graph import StateGraph
 from langgraph.prebuilt import tools_condition
 from langgraph.prebuilt import ToolNode
@@ -42,7 +46,11 @@ def get_graph(requested_tools: list):
 
 
 def stream_graph_updates(
-    graph: StateGraph, user_input: str, init_config: dict[str, any]
+    graph: StateGraph,
+    user_input: str,
+    init_config: dict[str, any],
+    store_incremental_state: bool,
+    run_timestamp: str,
 ):
     try:
         events = graph.stream(
@@ -52,6 +60,39 @@ def stream_graph_updates(
         )
         for event in events:
             event["messages"][-1].pretty_print()
+
+        if store_incremental_state:
+            try:
+                snapshot = graph.get_state(config=init_config)
+            except Exception as e:
+                print(
+                    f"No state yet, or error getting state, or error serializing state - will write empty state: {e}"
+                )
+
+            try:
+                file_name = f"local_state/incremental_state_{run_timestamp}.ndjson"
+
+                with open(file_name, "a") as f:
+                    values: Union[dict[str, Any], Any] = snapshot.values
+
+                    json.dump(
+                        {
+                            "next_node": str(snapshot.next) if snapshot.next else "END",
+                            "state": {
+                                "values": str(values),
+                                "config": str(snapshot.config),
+                                "metadata": str(snapshot.metadata),
+                                "created_at": str(snapshot.created_at),
+                                "parent_config": str(snapshot.parent_config),
+                                "tasks": str(snapshot.tasks),
+                            },
+                        },
+                        f,
+                    )
+                    f.write("\n")
+            except Exception as e:
+                print(f"Error in writing incremental state: {e}")
+
     except Exception as e:
         print(f"Error in stream_graph_updates: {e}")
 

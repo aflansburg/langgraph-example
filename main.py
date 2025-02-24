@@ -1,10 +1,14 @@
 import sys
-
+from datetime import datetime
 from src.util import set_env
 from src.graph import get_graph, stream_graph_updates, write_graph_png
 
 
-def main(write_graph_img: bool = False):
+def main(
+    write_graph_img: bool = False,
+    store_incremental_state: bool = False,
+    run_timestamp: str = "",
+):
     set_env("CHAT_MODEL")
 
     # allows us to search the web
@@ -29,7 +33,11 @@ def main(write_graph_img: bool = False):
                 break
 
             stream_graph_updates(
-                graph=graph, user_input=user_input, init_config=init_config
+                graph=graph,
+                user_input=user_input,
+                init_config=init_config,
+                store_incremental_state=store_incremental_state,
+                run_timestamp=run_timestamp,
             )
         except Exception as e:
             print(f"Error: {e}")
@@ -37,7 +45,11 @@ def main(write_graph_img: bool = False):
 
 
 if __name__ == "__main__":
-    should_write_graph_img = False
-    if len(sys.argv) > 1 and sys.argv[1] == "--graph-image":
-        should_write_graph_img = True
-    main(write_graph_img=should_write_graph_img)
+    should_write_graph_img = "--graph-image" in sys.argv
+    should_store_incremental_state = "--incremental-state" in sys.argv
+    run_timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    main(
+        write_graph_img=should_write_graph_img,
+        store_incremental_state=should_store_incremental_state,
+        run_timestamp=run_timestamp,
+    )
