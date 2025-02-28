@@ -30,8 +30,16 @@ def _get_llm(model: str):
 def chatbot(state: State):
     llm = _get_llm(os.environ["CHAT_MODEL"])
 
-    tools = [get_tools("search")]
+    tools = get_tools(["search", "human_assistance"])
 
     tooled_llm = llm.bind_tools(tools)
 
-    return {"messages": [tooled_llm.invoke(state["messages"])]}
+    message = tooled_llm.invoke(state["messages"])
+
+    # from Langraph tut:
+    #   Because we will be interrupting during tool execution,
+    #   we disable parallel tool calling to avoid repeating any
+    #   tool invocations when we resume.
+    assert len(message.tool_calls) <= 1
+
+    return {"messages": [message]}

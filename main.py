@@ -1,7 +1,15 @@
-import sys
 from datetime import datetime
+import sys
+import os
+
 from src.util import set_env
 from src.graph import get_graph, stream_graph_updates, write_graph_png
+
+if os.path.exists(".env.local"):
+    import dotenv
+
+    dotenv.load_dotenv(dotenv_path=".env.local")
+    print(".env.local present - loaded env vars")
 
 
 def main(
@@ -14,7 +22,7 @@ def main(
     # allows us to search the web
     # we can also add more tools here but we need
     # to implement them in src.tools.get_tools currently
-    requested_tools = ["search"]
+    requested_tools = ["search", "human_assistance"]
 
     init_config = {"configurable": {"thread_id": "1"}}
 
@@ -28,7 +36,7 @@ def main(
             user_input = input("User: ")
             if user_input.lower() in ["quit", "exit", "q"]:
                 print("User requested to quit. Here are the messages from state:")
-                print(graph.get_state())
+                print(graph.get_state(config=init_config))
 
                 break
 

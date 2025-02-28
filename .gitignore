@@ -15,3 +15,4 @@ local_state/*.ndjson
 # But do not ignore files with 'example' in the name
 !local_state/*example*.ndjson
 
+.env.*

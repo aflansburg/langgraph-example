@@ -1,22 +1,65 @@
-# import json
-
-# from langchain_core.messages import ToolMessage
-
+import os
+from typing import Callable
 from langgraph.graph import END
 
 from langchain_community.tools.tavily_search import TavilySearchResults
 
+from langchain_core.tools import tool
+
+from langgraph.types import Command, interrupt
+
 from src.state import State
 from src.util import set_sensitive_env
 
+ENABLED_TOOLS = ["search", "human_assistance"]
 
-def get_tools(type: str):
-    if type == "search":
-        set_sensitive_env("TAVILY_API_KEY")
-        return TavilySearchResults(max_results=2)
-    else:
-        print(f"Invalid tool type requested: {type} - skipping")
-        return None
+# Tools
+
+
+@tool
+def human_assistance(query: str) -> str:
+    """
+    Use this tool to get help from a human.
+
+    Args:
+        query: The query to get help with.
+
+    Returns:
+        The response from the human.
+    """
+    human_response = interrupt({"query": query})
+    return human_response["data"]
+
+
+def _get_search_tool() -> Callable:
+    """
+    A search engine optimized for comprehensive, accurate, and trusted results.
+    Useful for when you need to answer questions about current events.
+    Input should be a search query.
+    """
+    set_sensitive_env("TAVILY_API_KEY")
+    if not os.environ.get("TAVILY_API_KEY"):
+        raise ValueError("TAVILY_API_KEY is not set and search tool will not function.")
+    return TavilySearchResults(max_results=2)
+
+
+# Tool Control
+
+TOOL_REGISTRY = {
+    "search": _get_search_tool,
+    "human_assistance": human_assistance,
+}
+
+
+def get_tools(tool_types: list[str]) -> list[Callable]:
+    tools = []
+    for tool_type in tool_types:
+        if tool_type in TOOL_REGISTRY:
+            tool = TOOL_REGISTRY[tool_type]
+            tools.append(tool)
+        else:
+            print(f"Tool type {tool_type} is not enabled - skipping")
+    return tools
 
 
 def route_tools(state: State):

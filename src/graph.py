@@ -1,5 +1,5 @@
 import json
-from typing import Any, Union
+from typing import Any, Union, Callable
 
 from langgraph.graph import StateGraph
 from langgraph.prebuilt import tools_condition
@@ -17,12 +17,12 @@ def init_graph_builder() -> StateGraph:
     return graph_builder
 
 
-def get_graph(requested_tools: list):
+def get_graph(requested_tools: list[str]) -> StateGraph:
     graph_builder = init_graph_builder()
 
     graph_builder.add_node("chatbot", chatbot)
 
-    tools: list[any] = [get_tools(t) for t in requested_tools if get_tools(t)]
+    tools = get_tools(requested_tools)
 
     tool_node = ToolNode(tools=tools)
 
