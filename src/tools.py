@@ -39,18 +39,25 @@ def human_assistance(
     Returns:
         The response from the human.
     """
+    print(
+        f"Human assistance called with query: {query} and attributes: {attributes} and tool_call_id: {tool_call_id}"
+    )
     human_query_object = {"query": query}
 
     for k, v in attributes.items():
         human_query_object[k] = v
 
+    print(f"Human query object: {human_query_object}")
+
     human_response = interrupt(human_query_object)
+
+    print(f"Human response: {human_response}")
 
     if human_response.get("OK to continue?", "").lower().startswith("y"):
         response = "continue"
     else:
         corrected_attributes = {}
-        for k, v in human_response.items():
+        for k, v in attributes.items():
             if k not in ["query", "OK to continue?"]:
                 corrected_attributes[k] = human_response.get(k, v)
         response = f"Made corrections: {', '.join([f'{k}={v}' for k, v in corrected_attributes.items()])}"

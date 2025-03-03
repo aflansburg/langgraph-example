@@ -56,3 +56,8 @@ uv run main.py --incremental-state
 
 <img src="assets/example.png" alt="Example Image" style="width:75%;">
 
+## WIP: Arbitrary Arguments in tool calls
+
+The models can sometimes pass arbitrary arguments to tool calls, such as the `human_assistance` tool, however, it is flaky at the moment.
+
+<img src="assets/human_interaction.png" alt="Example Image" style="width:75%;">

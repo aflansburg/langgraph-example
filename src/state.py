@@ -10,5 +10,6 @@ class State(TypedDict):
     # in the annotation defines how this state key should be updated
     # (in this case, it appends messages to the list, rather than overwriting them)
     messages: Annotated[list, add_messages]
-    # Attempt at supporting arbitrary attributes
+    # Support arbitrary attributes that can be passed to tools
+    # and even mentioned by the human such as the 'temperature' is 47 degrees C
     attributes: dict[str, Any]
