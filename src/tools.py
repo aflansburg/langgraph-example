@@ -1,11 +1,11 @@
 import os
-from typing import Callable
+from typing import Any, Annotated, Callable
 from langgraph.graph import END
 
 from langchain_community.tools.tavily_search import TavilySearchResults
 
-from langchain_core.tools import tool
-
+from langchain_core.tools import tool, InjectedToolCallId
+from langchain_core.messages import ToolMessage
 from langgraph.types import Command, interrupt
 
 from src.state import State
@@ -17,18 +17,52 @@ ENABLED_TOOLS = ["search", "human_assistance"]
 
 
 @tool
-def human_assistance(query: str) -> str:
+def human_assistance(
+    query: str,
+    attributes: dict[str, Any] = {},
+    tool_call_id: Annotated[str, InjectedToolCallId] = "",
+) -> str:
     """
     Use this tool to get help from a human.
+    You can provide arbitrary attributes to the human.
+    The human will return a response with the following format:
+    {
+        "query": <query>,
+        "OK to continue?": <yes|no>,
+        <arbitrary attribute name>: <arbitrary attribute value>
+    }
 
     Args:
         query: The query to get help with.
-
+        attributes: Arbitrary attributes to pass to the human. If there is no need for attributes, pass an empty dictionary.
+        tool_call_id: The ID of the tool call.
     Returns:
         The response from the human.
     """
-    human_response = interrupt({"query": query})
-    return human_response["data"]
+    human_query_object = {"query": query}
+
+    for k, v in attributes.items():
+        human_query_object[k] = v
+
+    human_response = interrupt(human_query_object)
+
+    if human_response.get("OK to continue?", "").lower().startswith("y"):
+        response = "continue"
+    else:
+        corrected_attributes = {}
+        for k, v in human_response.items():
+            if k not in ["query", "OK to continue?"]:
+                corrected_attributes[k] = human_response.get(k, v)
+        response = f"Made corrections: {', '.join([f'{k}={v}' for k, v in corrected_attributes.items()])}"
+
+    state_update = {
+        "messages": [ToolMessage(response, tool_call_id=tool_call_id)],
+    }
+
+    for k, v in corrected_attributes.items():
+        state_update[k] = v
+
+    return Command(update=state_update)
 
 
 def _get_search_tool() -> Callable:

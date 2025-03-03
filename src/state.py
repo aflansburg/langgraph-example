@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Any
 
 from typing_extensions import TypedDict
 
@@ -10,3 +10,5 @@ class State(TypedDict):
     # in the annotation defines how this state key should be updated
     # (in this case, it appends messages to the list, rather than overwriting them)
     messages: Annotated[list, add_messages]
+    # Attempt at supporting arbitrary attributes
+    attributes: dict[str, Any]
