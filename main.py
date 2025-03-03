@@ -31,25 +31,21 @@ def main(
     if write_graph_img:
         write_graph_png(graph)
 
-    while True:
-        try:
-            user_input = input("User: ")
-            if user_input.lower() in ["quit", "exit", "q"]:
-                print("User requested to quit. Here are the messages from state:")
-                print(graph.get_state(config=init_config))
+    try:
+        user_input = input("User: ")
 
-                break
+        stream_graph_updates(
+            graph=graph,
+            user_input=user_input,
+            init_config=init_config,
+            store_incremental_state=store_incremental_state,
+            run_timestamp=run_timestamp,
+        )
+    except Exception as e:
+        print(f"Error in main loop: {e}")
+        import traceback
 
-            stream_graph_updates(
-                graph=graph,
-                user_input=user_input,
-                init_config=init_config,
-                store_incremental_state=store_incremental_state,
-                run_timestamp=run_timestamp,
-            )
-        except Exception as e:
-            print(f"Error: {e}")
-            break
+        traceback.print_exc()
 
 
 if __name__ == "__main__":

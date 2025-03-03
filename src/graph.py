@@ -1,7 +1,7 @@
 import json
-from typing import Any, Union, Callable
+from typing import Any, Union
 
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph, START
 from langgraph.prebuilt import tools_condition
 from langgraph.prebuilt import ToolNode
 
@@ -34,6 +34,8 @@ def get_graph(requested_tools: list[str]) -> StateGraph:
     )
 
     graph_builder.add_edge("tools", "chatbot")
+
+    graph_builder.add_edge(START, "chatbot")
 
     graph_builder.set_entry_point("chatbot")
 
@@ -91,9 +93,15 @@ def stream_graph_updates(
                     f.write("\n")
             except Exception as e:
                 print(f"Error in writing incremental state: {e}")
+                import traceback
+
+                traceback.print_exc()
 
     except Exception as e:
         print(f"Error in stream_graph_updates: {e}")
+        import traceback
+
+        traceback.print_exc()
 
 
 def write_graph_png(graph: StateGraph):

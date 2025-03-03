@@ -16,3 +16,5 @@ local_state/*.ndjson
 !local_state/*example*.ndjson
 
 .env.*
+
+.DS_Store

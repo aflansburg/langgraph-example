@@ -35,7 +35,6 @@ def human_assistance(
     Args:
         query: The query to get help with.
         attributes: Arbitrary attributes to pass to the human. If there is no need for attributes, pass an empty dictionary.
-        tool_call_id: The ID of the tool call.
     Returns:
         The response from the human.
     """
@@ -58,7 +57,7 @@ def human_assistance(
     else:
         corrected_attributes = {}
         for k, v in attributes.items():
-            if k not in ["query", "OK to continue?"]:
+            if k != "query":
                 corrected_attributes[k] = human_response.get(k, v)
         response = f"Made corrections: {', '.join([f'{k}={v}' for k, v in corrected_attributes.items()])}"
 
