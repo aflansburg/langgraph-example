@@ -58,6 +58,7 @@ uv run main.py --incremental-state
 
 ## WIP: Arbitrary Arguments in tool calls
 
-The models can sometimes pass arbitrary arguments to tool calls, such as the `human_assistance` tool, however, it is flaky at the moment.
+The models can sometimes pass arbitrary arguments to tool calls, such as the `human_assistance` tool, however, it could be flaky.
+We need to fix the bug preventing the execution flow from actually prompting the human for correction.
 
-<img src="assets/human_interaction.png" alt="Example Image" style="width:75%;">
+<img src="assets/human_interaction.png" alt="Tool call with arbitrary arguments" style="width:75%;">
